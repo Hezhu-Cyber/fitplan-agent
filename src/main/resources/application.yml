@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: fitplan-rag
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  ai:
+    model:
+      chat: openai
+      embedding: openai
+    openai:
+      base-url: ${DASHSCOPE_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      chat:
+        model: ${DASHSCOPE_CHAT_MODEL:qwen3.7-flash}
+      embedding:
+        model: ${DASHSCOPE_EMBEDDING_MODEL:text-embedding-v3}
+        dimensions: 1024
+    vectorstore:
+      pgvector:
+        initialize-schema: false
+        schema-validation: true
+        dimensions: 1024
+        distance-type: COSINE_DISTANCE
+        index-type: HNSW
+        max-document-batch-size: 10
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/fitplan}
+    username: ${DB_USERNAME:fitplan}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: 3000
+  flyway:
+    enabled: true
+
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    com.fitplan.rag: INFO
+    org.springframework.ai: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:health,info}
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+fitplan:
+  web:
+    allowed-origins: ${FITPLAN_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
+  risk:
+    # Deterministic red-flag rules remain active. Enable the additional LLM
+    # classifier explicitly only when its model credentials are verified.
+    classifier-enabled: ${FITPLAN_RISK_CLASSIFIER_ENABLED:false}
+    classifier-model: ${DASHSCOPE_RISK_MODEL:qwen3.7-flash}
+  rag:
+    curated-corpus-pattern: ${FITPLAN_RAG_CURATED_CORPUS_PATTERN:file:Data/knowledge-base/**/*.md}
+    top-k: ${FITPLAN_RAG_TOP_K:2}
+    similarity-threshold: ${FITPLAN_RAG_SIMILARITY_THRESHOLD:0.4}
+    candidate-k: ${FITPLAN_RAG_CANDIDATE_K:12}
+    lexical-candidate-k: ${FITPLAN_RAG_LEXICAL_CANDIDATE_K:12}
+    max-context-chars: ${FITPLAN_RAG_MAX_CONTEXT_CHARS:6000}
+    max-chunks-per-source: ${FITPLAN_RAG_MAX_CHUNKS_PER_SOURCE:2}
+    query-rewrite-enabled: ${FITPLAN_RAG_QUERY_REWRITE_ENABLED:true}
+    # Existing PGVector data is reused by default. Set the environment variable
+    # to true only when an intentional re-index is required.
+    index-on-startup: ${FITPLAN_RAG_INDEX_ON_STARTUP:false}
+    rerank-enabled: ${FITPLAN_RAG_RERANK_ENABLED:false}
+    rerank-model: ${FITPLAN_RAG_RERANK_MODEL:qwen3-rerank}
+    rerank-base-url: ${DASHSCOPE_RERANK_BASE_URL:}

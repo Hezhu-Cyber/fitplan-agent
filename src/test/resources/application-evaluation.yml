@@ -1,0 +1,15 @@
+spring:
+  ai:
+    openai:
+      api-key: ${DASHSCOPE_API_KEY}
+      chat:
+        temperature: 0.0
+
+logging:
+  level:
+    org.springframework.ai: WARN
+
+fitplan:
+  rag:
+    index-on-startup: false
+    rerank-enabled: ${FITPLAN_RAG_RERANK_ENABLED:false}

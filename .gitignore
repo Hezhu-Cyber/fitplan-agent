@@ -1,0 +1,31 @@
+# Build outputs
+target/
+frontend/dist/
+*.class
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Local runtime & data
+.runtime/
+Data/process data/
+Data/restricted-local/
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment & secrets
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc

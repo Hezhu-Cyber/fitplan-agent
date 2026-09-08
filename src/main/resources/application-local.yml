@@ -1,0 +1,10 @@
+# Local development configuration. Set DASHSCOPE_API_KEY in the environment
+# before starting the application. Never commit a real key here.
+spring:
+  ai:
+    openai:
+      api-key: ${DASHSCOPE_API_KEY}
+
+fitplan:
+  rag:
+    rerank-api-key: ${DASHSCOPE_API_KEY:}

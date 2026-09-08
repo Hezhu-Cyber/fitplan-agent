@@ -1,0 +1,46 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FitPlanApplication (Maven)" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="cmdOptions" />
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="spring-boot:run" />
+            </list>
+          </option>
+          <option name="multimoduleDir" />
+          <option name="pomFileName" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <RunnerSettings>
+      <MavenRunnerSettings>
+        <option name="environmentProperties">
+          <map>
+            <entry key="DASHSCOPE_BASE_URL" value="https://dashscope.aliyuncs.com/compatible-mode/v1" />
+            <entry key="DASHSCOPE_CHAT_MODEL" value="qwen3.7-flash" />
+            <entry key="DASHSCOPE_RISK_MODEL" value="qwen3.7-flash" />
+            <entry key="FITPLAN_RAG_INDEX_ON_STARTUP" value="false" />
+            <entry key="FITPLAN_RISK_CLASSIFIER_ENABLED" value="false" />
+          </map>
+        </option>
+        <option name="jreName" value="21" />
+      </MavenRunnerSettings>
+    </RunnerSettings>
+    <method v="2" />
+  </configuration>
+</component>

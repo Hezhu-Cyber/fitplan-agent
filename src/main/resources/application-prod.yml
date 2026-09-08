@@ -1,0 +1,11 @@
+spring:
+  ai:
+    openai:
+      api-key: ${DASHSCOPE_API_KEY}
+
+server:
+  port: ${PORT:8123}
+
+fitplan:
+  rag:
+    rerank-api-key: ${DASHSCOPE_API_KEY:}

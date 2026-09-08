@@ -1,0 +1,41 @@
+id	query	ground_truth	expected_filename	category
+1	健康成年人一周至少应该进行多少分钟中等强度有氧运动？	健康成年人每周至少 150 分钟中等强度有氧活动。	01-activity-guidelines.md	activity
+2	运动时还能说话但很难连续唱歌，这属于什么运动强度？	属于中等强度，能说话但难以连续唱歌。	01-activity-guidelines.md	activity
+3	成年人每周至少需要安排几天肌肉强化训练？	每周至少 2 天肌肉强化训练。	01-activity-guidelines.md	activity
+4	训练时感觉还能再完成两次动作，大约对应多少 RPE？	约对应 RPE 8，能保留 2 次余力。	02-strength-training.md	strength
+5	什么是力量训练中的双重递进方法？	双重递进同时增加重量和次数，是常用进阶方法。	02-strength-training.md	strength
+6	没有条件做杠铃深蹲时，可以用哪些相同动作模式替代？	可用高脚杯深蹲、哑铃深蹲或箱式深蹲替代。	02-strength-training.md	strength
+7	只做卷腹能不能减掉腹部脂肪？	不能，局部训练无法减掉局部脂肪。	03-cardio-fat-loss.md	cardio
+8	完全没有运动基础的人应该怎样开始安排有氧训练？	从低强度、短时间开始，每周 3 次逐步递增。	03-cardio-fat-loss.md	cardio
+9	减脂期间某一天体重突然增加，是否说明减脂失败？	不一定，体重波动受水分影响，应关注长期趋势。	03-cardio-fat-loss.md	cardio
+10	运动过程中出现胸痛或晕厥时应该怎么办？	立即停止运动并就医评估。	04-recovery-safety.md	safety
+11	正式力量训练前应该怎样热身？	5-10 分钟低强度有氧加动态拉伸和目标肌群激活。	04-recovery-safety.md	safety
+12	连续多次无法完成目标次数且疲劳积累时应该怎样调整？	安排减载周，降低负荷和训练量。	04-recovery-safety.md	safety
+13	制定个性化训练计划前需要收集用户哪些信息？	年龄、目标、训练经验、时间、器械和健康限制。	05-plan-design.md	plan
+14	一份可执行的训练计划应该包含哪些组成部分？	热身、动作、组次数、强度、休息、递进和恢复。	05-plan-design.md	plan
+15	每周只能训练两天，还能设计有效的训练计划吗？	可以，采用全身或上下肢分化训练。	05-plan-design.md	plan
+16	孕中期适合哪些运动？	中等强度有氧和低冲击力量训练，避免仰卧位和高冲击。	prenatal-exercise.md	pregnancy
+17	产后多久能恢复力量训练？	产后 6 周开始轻度运动，根据个人情况逐步恢复。	postpartum-recovery.md	pregnancy
+18	老年人力量训练应该注意什么？	优先掌握基本动作，从轻负荷开始，注重平衡稳定。	elderly-training.md	elderly
+19	膝关节不适的人适合哪些有氧运动？	游泳、椭圆机、骑行等低冲击有氧。	low-impact-cardio.md	rehab
+20	跟腱炎应该怎样恢复训练？	避免高冲击，做离心训练，逐步恢复跑步。	achilles-tendinitis.md	rehab
+21	糖尿病患者运动前后要注意什么？	监测血糖，随身携带糖类补给，注意足部保护。	diabetes-exercise.md	disease
+22	高血压人群适合什么运动？	中等强度有氧和力量训练，避免屏气用力。	hypertension-exercise.md	disease
+23	跑步时膝盖外侧疼是什么问题？	可能是髂胫束综合征，应减少跑步距离，加强臀部训练。	runners-knee.md	rehab
+24	睡眠不足对训练有什么影响？	降低表现、削弱恢复、增加受伤风险，建议每晚 7-9 小时。	sleep-recovery.md	nutrition
+25	增肌期间每天蛋白质摄入量应该是多少？	每天每公斤体重约 1.6-2.2 克蛋白质。	protein-intake.md	nutrition
+26	训练前后碳水化合物摄入怎么安排？	训练前 1-2 小时摄入易消化碳水，训练后 30-60 分钟补充。	carb-timing.md	nutrition
+27	咖啡因对训练表现有什么影响？	可提高力量和耐力，下午后摄入可能影响睡眠。	caffeine-basics.md	nutrition
+28	肌酸需要加载期吗？	每天 3-5 克持续 3-4 周即可饱和，无需加载期。	creatine-basics.md	nutrition
+29	什么是 Zone 2 训练？	最大心率 60-70% 的低强度有氧，提升脂肪利用率。	zone-2-cardio.md	cardio
+30	什么是乳酸阈值训练？	能提升身体清除乳酸的能力，延迟疲劳。	lactate-threshold.md	cardio
+31	死虫式主要训练什么核心能力？	核心抗伸展能力。	02-strength-training.md	strength
+32	什么是核心抗旋转训练？	通过抵抗外力旋转保持躯干稳定，如绳索伐木。	02-strength-training.md	strength
+33	如何安排 4 周有氧入门计划？	渐进增加每周时长和强度，从快走开始。	03-cardio-fat-loss.md	cardio
+34	每周训练几次最有利于增肌？	每个肌群每周训练 2 次以上更有利于肌肥大。	02-strength-training.md	strength
+35	什么是减载周？	每 4-6 周降低训练量和强度，帮助恢复。	04-recovery-safety.md	safety
+36	深蹲的标准动作要点是什么？	双脚与肩同宽，下蹲至大腿略低于平行，背部挺直。	02-strength-training.md	strength
+37	硬拉的标准动作要点是什么？	髋铰链主导，背部中立，杠铃贴近身体。	02-strength-training.md	strength
+38	俯身划船的标准动作要点是什么？	髋铰链，背部中立，拉至腹部，挤压肩胛骨。	02-strength-training.md	strength
+39	什么是推拉腿分化训练？	推日练胸肩三头，拉日练背二头，腿日练下肢。	02-strength-training.md	strength
+40	过度训练有哪些信号？	持续疲劳、睡眠下降、表现停滞、情绪低落。	04-recovery-safety.md	safety

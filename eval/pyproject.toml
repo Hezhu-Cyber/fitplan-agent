@@ -1,0 +1,16 @@
+[project]
+name = "fitplan-rag-eval"
+version = "0.1.0"
+description = "RAGAS 评测脚本 - 通过 HTTP 调 Spring Boot 评测接口"
+requires-python = ">=3.10"
+dependencies = [
+    "ragas>=0.2.10",
+    "datasets>=2.20.0",
+    "openai>=1.40.0",
+    "requests>=2.32.0",
+    "pandas>=2.2.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = true
