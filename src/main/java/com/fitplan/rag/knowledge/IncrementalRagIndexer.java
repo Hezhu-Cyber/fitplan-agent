@@ -138,20 +138,30 @@ public class IncrementalRagIndexer {
                 skipped++;
                 continue;
             }
+
             List<Document> chunks = createChunks(source);
             List<String> oldIds = repository.findVectorIds(source.sourceId());
-            if (!oldIds.isEmpty()) {
-                vectorStore.delete(oldIds);
-            }
+            Set<String> newIds = new HashSet<>(chunks.stream().map(Document::getId).toList());
+
+            // Add-before-delete keeps the previous version searchable if embedding fails midway.
             for (int start = 0; start < chunks.size(); start += EMBEDDING_BATCH_SIZE) {
                 int end = Math.min(start + EMBEDDING_BATCH_SIZE, chunks.size());
                 vectorStore.add(chunks.subList(start, end));
+                renewLease();
             }
-            log.info("Indexed RAG source: sourceId={}, filename={}, oldChunks={}, newChunks={}, schema={}",
-                    source.sourceId(), source.filename(), oldIds.size(), chunks.size(), CHUNK_SCHEMA_VERSION);
             repository.saveManifest(new RagIndexRepository.SourceManifest(
                     source.sourceId(), source.filename(), source.contentHash(), chunks.size(),
                     embeddingModel, embeddingDimensions, CHUNK_SCHEMA_VERSION));
+
+            List<String> obsoleteIds = oldIds.stream()
+                    .filter(id -> !newIds.contains(id))
+                    .toList();
+            if (!obsoleteIds.isEmpty()) {
+                vectorStore.delete(obsoleteIds);
+            }
+
+            log.info("Indexed RAG source: sourceId={}, filename={}, oldChunks={}, newChunks={}, schema={}",
+                    source.sourceId(), source.filename(), oldIds.size(), chunks.size(), CHUNK_SCHEMA_VERSION);
             changed++;
             indexedChunks += chunks.size();
         }
@@ -169,6 +179,12 @@ public class IncrementalRagIndexer {
         }
         return new IndexOutcome(false, new RagIndexRepository.IndexStats(
                 sources.size(), changed, indexedChunks, skipped, deleted));
+    }
+
+    private void renewLease() {
+        if (!repository.renewLock(LOCK_NAME, ownerId, LOCK_LEASE_SECONDS)) {
+            throw new IllegalStateException("RAG index lock lost while embedding");
+        }
     }
 
     private boolean isUnchanged(

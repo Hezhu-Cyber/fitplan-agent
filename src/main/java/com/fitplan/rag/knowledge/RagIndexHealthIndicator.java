@@ -16,7 +16,7 @@ class RagIndexHealthIndicator implements HealthIndicator {
     @Override
     public Health health() {
         try {
-            if (repository.hasSuccessfulIndex()) {
+            if (repository.hasSearchableIndex()) {
                 return Health.up().withDetail("index", "available").build();
             }
             return Health.outOfService()

@@ -66,7 +66,15 @@ public final class FitnessRiskAdvisor implements CallAdvisor, StreamAdvisor {
     }
 
     public static boolean blocked(ChatClientResponse response) {
-        return Boolean.TRUE.equals(response.context().get(BLOCKED_CONTEXT_KEY));
+        return response != null
+                && response.context() != null
+                && Boolean.TRUE.equals(response.context().get(BLOCKED_CONTEXT_KEY));
+    }
+
+    public static boolean blocked(ChatResponse response) {
+        return response != null
+                && response.getMetadata() != null
+                && Boolean.TRUE.equals(response.getMetadata().get(BLOCKED_CONTEXT_KEY));
     }
 
     private Optional<SafetyGuardAgent.SafetyDecision> assess(ChatClientRequest request) {

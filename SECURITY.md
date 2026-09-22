@@ -19,6 +19,6 @@ investigate before public disclosure.
 ## Deployment warning
 
 The repository defaults are intended for local development. A public deployment
-must use an origin allowlist, strong database credentials, authentication, rate
+must use an origin allowlist, strong database credentials, user authentication, rate
 limits, model-usage quotas, restricted management endpoints, TLS, and secret
 management. Never enable the `evaluation` Spring profile in production.

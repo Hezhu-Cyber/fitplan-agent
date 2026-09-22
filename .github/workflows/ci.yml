@@ -17,8 +17,18 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Run backend tests
-        run: mvn --batch-mode test
+      - name: Run backend tests and package
+        run: mvn --batch-mode --no-transfer-progress verify
+      - name: Upload backend test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: |
+            target/surefire-reports
+            target/failsafe-reports
+            target/site/jacoco
+          if-no-files-found: ignore
 
   frontend:
     runs-on: ubuntu-latest
@@ -39,6 +49,15 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build frontend
         run: pnpm build
+
+  containers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t fitplan-backend:ci .
+      - name: Build frontend image
+        run: docker build -t fitplan-frontend:ci frontend
 
   secret-scan:
     runs-on: ubuntu-latest

@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "disclaimer": "Deterministic safety baseline. It does not replace medical evaluation.",
+  "injuries": [
+    {
+      "name": "腰椎间盘突出",
+      "aliases": ["腰突", "腰间盘突出", "腰椎间盘突出", "腰椎间盘膨出"],
+      "restrictions": [
+        {"exercise": "硬拉", "aliases": ["硬拉", "deadlift"], "reason": "高轴向负荷可能加重腰部症状"},
+        {"exercise": "杠铃深蹲", "aliases": ["杠铃深蹲", "负重深蹲", "back squat"], "reason": "脊柱压缩和屈曲风险较高"},
+        {"exercise": "仰卧起坐", "aliases": ["仰卧起坐", "sit-up", "situp"], "reason": "反复脊柱屈曲可能加重症状"}
+      ]
+    },
+    {
+      "name": "膝关节炎",
+      "aliases": ["膝关节炎", "膝关节退化", "膝盖关节炎", "膝骨关节炎"],
+      "restrictions": [
+        {"exercise": "深蹲", "aliases": ["深蹲", "squat"], "reason": "深屈膝可能加重疼痛或肿胀"},
+        {"exercise": "弓步", "aliases": ["弓步", "箭步蹲", "lunge"], "reason": "单腿冲击和屈膝负荷较高"},
+        {"exercise": "跳跃", "aliases": ["跳跃", "跳箱", "波比跳", "burpee"], "reason": "落地冲击可能刺激膝关节"}
+      ]
+    },
+    {
+      "name": "肩袖损伤",
+      "aliases": ["肩袖损伤", "肩袖撕裂", "肩袖疼痛", "肩痛"],
+      "restrictions": [
+        {"exercise": "颈后推举", "aliases": ["颈后推举", "肩推", "overhead press"], "reason": "肩关节外展外旋负荷较高"},
+        {"exercise": "卧推", "aliases": ["卧推", "bench press"], "reason": "肩前侧和肩袖负荷较高"},
+        {"exercise": "侧平举", "aliases": ["侧平举", "侧举", "lateral raise"], "reason": "疼痛期可能加重肩袖负担"}
+      ]
+    },
+    {
+      "name": "踝关节扭伤",
+      "aliases": ["踝关节扭伤", "脚踝扭伤", "踝扭伤", "崴脚"],
+      "restrictions": [
+        {"exercise": "跑步", "aliases": ["跑步", "跑", "jogging", "running"], "reason": "踝关节反复冲击和侧向稳定要求较高"},
+        {"exercise": "跳跃", "aliases": ["跳跃", "跳箱", "跳绳", "burpee"], "reason": "落地和变向可能再次损伤踝关节"},
+        {"exercise": "弓步", "aliases": ["弓步", "箭步蹲", "lunge"], "reason": "踝背屈和单腿稳定负荷较高"}
+      ]
+    },
+    {
+      "name": "颈椎病",
+      "aliases": ["颈椎病", "颈椎间盘", "颈部疼痛", "颈痛"],
+      "restrictions": [
+        {"exercise": "颈后推举", "aliases": ["颈后推举", "肩推", "overhead press"], "reason": "颈部后伸和上肢负重可能加重症状"},
+        {"exercise": "倒立", "aliases": ["倒立", "handstand"], "reason": "颈椎承重风险较高"},
+        {"exercise": "高翻", "aliases": ["高翻", "power clean"], "reason": "颈部快速稳定和冲击负荷较高"}
+      ]
+    },
+    {
+      "name": "孕期",
+      "aliases": ["孕期", "怀孕", "妊娠", "孕妇"],
+      "restrictions": [
+        {"exercise": "仰卧起坐", "aliases": ["仰卧起坐", "sit-up", "situp"], "reason": "孕中晚期仰卧和腹压增加不适合自行训练"},
+        {"exercise": "高强度间歇", "aliases": ["HIIT", "高强度间歇", "burpee", "波比跳"], "reason": "需要专业评估强度、体温和心肺反应"},
+        {"exercise": "大重量训练", "aliases": ["大重量", "最大重量", "1RM"], "reason": "需要根据孕期阶段和专业人员评估调整"}
+      ]
+    },
+    {
+      "name": "骨质疏松",
+      "aliases": ["骨质疏松", "骨密度低"],
+      "restrictions": [
+        {"exercise": "跳跃", "aliases": ["跳跃", "跳箱", "跳绳", "burpee"], "reason": "高冲击活动可能增加骨折风险"},
+        {"exercise": "仰卧起坐", "aliases": ["仰卧起坐", "sit-up", "situp"], "reason": "脊柱屈曲负荷需要谨慎"},
+        {"exercise": "高翻", "aliases": ["高翻", "power clean"], "reason": "快速冲击和脊柱负荷较高"}
+      ]
+    }
+  ]
+}

@@ -9,6 +9,8 @@ node_modules/
 
 # Local runtime & data
 .runtime/
+Data/memory/
+Data/memory-artifacts/
 Data/process data/
 Data/restricted-local/
 *.log

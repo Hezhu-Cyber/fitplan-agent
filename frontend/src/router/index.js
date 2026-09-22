@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { hasValidSession } from '../auth'
 
 const routes = [
   {
@@ -11,12 +12,22 @@ const routes = [
     }
   },
   {
+    path: '/auth',
+    name: 'Auth',
+    component: () => import('../views/AuthView.vue'),
+    meta: {
+      title: '登录｜FitPlan',
+      description: '登录 FitPlan 个人训练空间'
+    }
+  },
+  {
     path: '/workspace',
     name: 'Workspace',
     component: () => import('../views/PlanWorkspace.vue'),
     meta: {
       title: '个人训练计划｜FitPlan',
-      description: 'FitPlan 个性化健身计划工作台'
+      description: 'FitPlan 个性化健身计划工作台',
+      requiresAuth: true
     }
   }
 ]
@@ -26,12 +37,18 @@ const router = createRouter({
   routes
 })
 
-// 全局导航守卫，设置文档标题
-router.beforeEach((to, from, next) => {
-  if (to.meta.title) {
-    document.title = to.meta.title
+router.beforeEach(to => {
+  if (to.meta.title) document.title = to.meta.title
+  if (to.meta.requiresAuth && !hasValidSession()) {
+    return { name: 'Auth', query: { redirect: to.fullPath } }
   }
-  next()
+  if (to.name === 'Auth' && hasValidSession()) {
+    const redirect = typeof to.query.redirect === 'string' && to.query.redirect.startsWith('/') && !to.query.redirect.startsWith('//')
+      ? to.query.redirect
+      : '/workspace'
+    return redirect
+  }
+  return true
 })
 
 export default router

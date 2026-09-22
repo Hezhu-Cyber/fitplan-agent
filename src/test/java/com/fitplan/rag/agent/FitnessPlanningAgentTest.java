@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FitnessPlanningAgentTest {
 
     @Test
-    void exposesSevenToolCallingCapabilities() {
+    void exposesNineToolCallingCapabilities() {
         assertThat(FitnessPlanningAgent.TOOL_NAMES)
                 .containsExactly(
                         "searchFitnessKnowledge",
@@ -16,14 +16,16 @@ class FitnessPlanningAgentTest {
                         "saveTrainingLog",
                         "getRecentTrainingLogs",
                         "savePlanSummary",
-                        "getCurrentPlan");
+                        "getCurrentPlan",
+                        "rememberUserFact",
+                        "readContextArtifact");
     }
 
     @Test
     void exposesAgentMetadataAndSystemPrompt() {
         assertThat(FitnessPlanningAgent.ID).isEqualTo("fitness-planning");
         assertThat(FitnessPlanningAgent.NAME).isEqualTo("健身规划 Agent");
-        assertThat(FitnessPlanningAgent.DESCRIPTION).contains("7 个工具");
+        assertThat(FitnessPlanningAgent.DESCRIPTION).contains("9 个工具");
         assertThat(FitnessPlanningAgent.SYSTEM_PROMPT)
                 .contains("FitPlan Agent")
                 .contains("searchFitnessKnowledge")

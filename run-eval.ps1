@@ -32,7 +32,7 @@ $ready = $false
 for ($i = 0; $i -lt 60; $i++) {
     Start-Sleep -Seconds 2
     try {
-        $health = Invoke-WebRequest -Uri "http://localhost:8123/actuator/health" -TimeoutSec 3 -UseBasicParsing
+        $health = Invoke-WebRequest -Uri "http://localhost:8123/api/actuator/health" -TimeoutSec 3 -UseBasicParsing
         if ($health.StatusCode -eq 200) { $ready = $true; break }
     } catch {}
 }

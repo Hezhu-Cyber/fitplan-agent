@@ -100,7 +100,7 @@ public class FitnessDocumentLoader {
             validateProvenance(parsed.metadata(), resource, sourceId);
 
             String body = parsed.body();
-            String contentHash = sha256(body.getBytes(StandardCharsets.UTF_8));
+            String contentHash = sha256(text.getBytes(StandardCharsets.UTF_8));
             String sourceTitle = metadataValue(parsed.metadata(), "title")
                     .orElseGet(() -> documentTitle(body, filename));
             String language = metadataValue(parsed.metadata(), "language").orElse("zh-CN");

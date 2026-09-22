@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,12 +16,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnabledIfEnvironmentVariable(named = "FITPLAN_RUN_AGENT_EVAL", matches = "(?i)true")
 class FitnessAgentToolCallingIT {
 
+    private static final UUID OWNER_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+
     @Autowired
     private FitnessPlanningService fitnessPlanningService;
 
     @Test
     void modelCallsKnowledgeToolAndReturnsActualSource() {
         String answer = fitnessPlanningService.streamPlan(
+                        OWNER_ID,
                         "力量训练中的 RPE 8 表示什么？请依据知识库回答。",
                         "agent-tool-smoke-test")
                 .collectList()

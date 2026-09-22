@@ -3,7 +3,7 @@
     <header class="topbar">
       <button class="brand" @click="goBack"><span>F</span><b>FitPlan</b></button>
       <div class="run-state"><i :class="connectionStatus"></i>{{ statusText }}</div>
-      <button class="home-link" @click="goBack">返回首页</button>
+      <div class="account"><span>{{ authState.user?.displayName || 'FitPlan 用户' }}</span><button @click="logout">退出</button></div>
     </header>
 
     <div class="layout">
@@ -22,7 +22,7 @@
       <main class="main-panel">
         <div class="panel-head">
           <div><small>FITNESS WORKSPACE</small><h1>个人训练计划工作台</h1></div>
-          <div class="model-chip"><i></i> Fitness RAG</div>
+          <div class="model-chip"><i></i> Streaming RAG</div>
         </div>
         <ChatRoom :messages="messages" :connection-status="connectionStatus" ai-type="super" @send-message="sendMessage" />
       </main>
@@ -35,15 +35,18 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHead } from '@vueuse/head'
 import ChatRoom from '../components/ChatRoom.vue'
-import { streamFitnessPlan } from '../api'
+import { logout as logoutRequest, streamFitnessPlan } from '../api'
+import { authState, clearSession } from '../auth'
 
 useHead({ title: '个人训练计划｜FitPlan' })
 const router = useRouter()
 const messages = ref([])
 const connectionStatus = ref('disconnected')
-let eventSource = null
+let abortController = null
 let receivedData = false
-const chatId = `fitness_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+const storageKey = 'fitplan.chat-id'
+const chatId = localStorage.getItem(storageKey) || createChatId()
+localStorage.setItem(storageKey, chatId)
 
 const examples = [
   { icon: '◆', title: '健身房增肌', desc: '每周三练的全身进阶方案', prompt: '我 25 岁，健身新手，目标增肌，每周能去健身房 3 次，每次 60 分钟，没有已知伤病。请帮我制定 4 周计划。' },
@@ -54,31 +57,58 @@ const statusText = computed(() => ({ connecting: '正在检索并生成计划', 
 const addMessage = (content, isUser, type = '') => messages.value.push({ content, isUser, type, time: Date.now() })
 const submitExample = prompt => { if (connectionStatus.value !== 'connecting') sendMessage(prompt) }
 
-const sendMessage = message => {
+function createChatId() {
+  if (globalThis.crypto?.randomUUID) return `fitness_${globalThis.crypto.randomUUID()}`
+  return `fitness_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+}
+
+const sendMessage = async message => {
+  if (connectionStatus.value === 'connecting') return
   addMessage(message, true, 'user-question')
-  eventSource?.close()
+  abortController?.abort()
+  const controller = new AbortController()
+  abortController = controller
   connectionStatus.value = 'connecting'
   receivedData = false
   const reply = { content: '', isUser: false, type: 'ai-answer', time: Date.now() }
   messages.value.push(reply)
-  eventSource = streamFitnessPlan(message, chatId)
-  eventSource.onmessage = event => {
-    if (!event.data || event.data === '[DONE]') return
-    receivedData = true
-    reply.content += event.data
-  }
-  eventSource.onerror = () => {
-    connectionStatus.value = receivedData ? 'disconnected' : 'error'
-    if (!receivedData) reply.content = '暂时无法连接健身计划服务，请确认后端已经重启并正常运行。'
-    eventSource?.close()
+
+  try {
+    await streamFitnessPlan(message, chatId, {
+      signal: controller.signal,
+      onChunk: chunk => {
+        receivedData = true
+        reply.content += chunk
+      }
+    })
+    connectionStatus.value = 'disconnected'
+  } catch (error) {
+    if (error.name === 'AbortError') return
+    if (error.status === 401) {
+      clearSession()
+      await router.replace({ name: 'Auth', query: { redirect: '/workspace' } })
+      return
+    }
+    connectionStatus.value = 'error'
+    reply.content += receivedData
+      ? '\n\n生成中断，请检查网络后重试。'
+      : `暂时无法连接健身计划服务：${error.message}`
+  } finally {
+    if (abortController === controller) abortController = null
   }
 }
 
 const goBack = () => router.push('/')
+const logout = async () => {
+  try { await logoutRequest() } finally {
+    clearSession()
+    await router.replace('/auth')
+  }
+}
 onMounted(() => addMessage('你好，我是 FitPlan。告诉我你的年龄、目标、训练经验、每周可训练时间、器械条件和伤病情况，我会结合健身知识库为你制定可执行的计划。', false, 'welcome'))
-onBeforeUnmount(() => eventSource?.close())
+onBeforeUnmount(() => abortController?.abort())
 </script>
 
 <style scoped>
-.workspace{min-height:100vh;background:#eeede8;color:#191b18}.topbar{height:68px;background:#151815;color:#f7f7f3;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #30342f}.brand{display:flex;align-items:center;gap:10px;background:none;border:0;color:inherit;font-size:17px}.brand span{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#b6f83b;color:#121512;font:italic bold 18px Georgia}.run-state{position:absolute;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.5px;color:#a3a79f}.run-state i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#b6f83b;margin-right:8px;box-shadow:0 0 9px #b6f83b}.run-state i.connecting{animation:pulse 1s infinite}.run-state i.error{background:#ff765e}.home-link{border:1px solid #3c413b;border-radius:7px;background:transparent;color:#c8ccc5;padding:9px 13px;font-size:12px}.layout{width:min(1420px,100%);margin:auto;display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 68px)}.sidebar{padding:34px 24px;border-right:1px solid #d4d3cc}.side-title small,.panel-head small,.capability>small{font-size:9px;letter-spacing:1.7px;color:#80837e;font-weight:800}.side-title h2{font-size:19px;margin:9px 0 22px}.example{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;text-align:left;padding:14px 12px;margin-bottom:9px;border:1px solid #d5d4cd;border-radius:10px;background:#f7f6f2;color:#20221f;transition:.2s}.example:hover{border-color:#9bd51e;transform:translateY(-1px);box-shadow:0 8px 22px #2830140d}.example>span{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#e8e7e1}.example b,.example small{display:block}.example b{font-size:13px}.example small{font-size:10px;color:#858781;margin-top:4px}.example i{font-style:normal;color:#8a8d87}.capability{margin-top:34px;padding-top:23px;border-top:1px solid #d4d3cc}.capability>div{font-size:12px;margin-top:16px;color:#666963}.capability span{display:inline-block;width:25px;color:#679600}.main-panel{padding:34px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.panel-head h1{font-size:25px;margin-top:6px}.model-chip{padding:8px 12px;border:1px solid #d0cfc8;border-radius:20px;font:11px monospace;color:#636660;background:#f5f4ef}.model-chip i{display:inline-block;width:6px;height:6px;background:#8ccb12;border-radius:50%;margin-right:6px}@keyframes pulse{50%{opacity:.3}}@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main-panel{padding:20px}.run-state{display:none}}@media(max-width:480px){.topbar{padding:0 15px}.home-link{font-size:0}.home-link:after{content:'首页';font-size:12px}.panel-head h1{font-size:21px}.model-chip{display:none}}
+.workspace{min-height:100vh;background:#eeede8;color:#191b18}.topbar{height:68px;background:#151815;color:#f7f7f3;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #30342f}.brand{display:flex;align-items:center;gap:10px;background:none;border:0;color:inherit;font-size:17px}.brand span{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#b6f83b;color:#121512;font:italic bold 18px Georgia}.run-state{position:absolute;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.5px;color:#a3a79f}.run-state i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#b6f83b;margin-right:8px;box-shadow:0 0 9px #b6f83b}.run-state i.connecting{animation:pulse 1s infinite}.run-state i.error{background:#ff765e}.account{display:flex;align-items:center;gap:12px;font-size:12px;color:#c8ccc5}.account button{border:1px solid #3c413b;border-radius:7px;background:transparent;color:#c8ccc5;padding:8px 11px}.home-link{border:1px solid #3c413b;border-radius:7px;background:transparent;color:#c8ccc5;padding:9px 13px;font-size:12px}.layout{width:min(1420px,100%);margin:auto;display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 68px)}.sidebar{padding:34px 24px;border-right:1px solid #d4d3cc}.side-title small,.panel-head small,.capability>small{font-size:9px;letter-spacing:1.7px;color:#80837e;font-weight:800}.side-title h2{font-size:19px;margin:9px 0 22px}.example{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;text-align:left;padding:14px 12px;margin-bottom:9px;border:1px solid #d5d4cd;border-radius:10px;background:#f7f6f2;color:#20221f;transition:.2s}.example:hover{border-color:#9bd51e;transform:translateY(-1px);box-shadow:0 8px 22px #2830140d}.example>span{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#e8e7e1}.example b,.example small{display:block}.example b{font-size:13px}.example small{font-size:10px;color:#858781;margin-top:4px}.example i{font-style:normal;color:#8a8d87}.capability{margin-top:34px;padding-top:23px;border-top:1px solid #d4d3cc}.capability>div{font-size:12px;margin-top:16px;color:#666963}.capability span{display:inline-block;width:25px;color:#679600}.main-panel{padding:34px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.panel-head h1{font-size:25px;margin-top:6px}.model-chip{padding:8px 12px;border:1px solid #d0cfc8;border-radius:20px;font:11px monospace;color:#636660;background:#f5f4ef}.model-chip i{display:inline-block;width:6px;height:6px;background:#8ccb12;border-radius:50%;margin-right:6px}@keyframes pulse{50%{opacity:.3}}@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main-panel{padding:20px}.run-state{display:none}}@media(max-width:480px){.topbar{padding:0 15px}.home-link{font-size:0}.home-link:after{content:'首页';font-size:12px}.panel-head h1{font-size:21px}.model-chip{display:none}}
 </style>

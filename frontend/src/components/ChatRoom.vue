@@ -12,7 +12,7 @@
       <div v-if="connectionStatus==='connecting'" class="thinking"><span></span><span></span><span></span> 正在检索知识库并生成建议</div>
     </div>
     <div class="composer">
-      <textarea v-model="inputMessage" @keydown.enter.exact.prevent="sendMessage" placeholder="描述你的目标、经验、时间、器械和身体情况..." :disabled="connectionStatus==='connecting'"></textarea>
+      <textarea v-model="inputMessage" @keydown.enter.exact.prevent="sendMessage" maxlength="2000" placeholder="描述你的目标、经验、时间、器械和身体情况..." :disabled="connectionStatus==='connecting'"></textarea>
       <div class="composer-bottom"><span>Enter 发送 · Shift + Enter 换行</span><button @click="sendMessage" :disabled="connectionStatus==='connecting'||!inputMessage.trim()">生成计划 <b>↗</b></button></div>
     </div>
   </section>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 双 Agent 编排器（对外门面）。
@@ -30,8 +31,8 @@ public class FitnessPlanningService {
     }
 
     /** 双 Agent 流水线入口：安全审查放行后，由健身规划 Agent 流式生成回答。 */
-    public Flux<String> streamPlan(String message, String chatId) {
-        return planningAgent.streamPlan(message, chatId);
+    public Flux<String> streamPlan(UUID ownerId, String message, String chatId) {
+        return planningAgent.streamPlan(ownerId, message, chatId);
     }
 
     /** 返回当前注册的全部 Agent（健身规划 Agent + 安全审查 Agent）。 */

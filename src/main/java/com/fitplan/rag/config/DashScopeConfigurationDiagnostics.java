@@ -28,11 +28,7 @@ final class DashScopeConfigurationDiagnostics {
     @EventListener(ApplicationReadyEvent.class)
     void reportConfiguration() {
         String trimmed = apiKey.trim();
-        String keyType = trimmed.startsWith("sk-sp-") ? "plan-key"
-                : trimmed.startsWith("sk-ws") ? "workspace-key"
-                : trimmed.startsWith("sk-") ? "legacy-key"
-                : "unknown";
-        log.info("DashScope configuration: baseUrl={}, chatModel={}, keyType={}, keyLength={}, whitespace={}",
-                baseUrl, chatModel, keyType, trimmed.length(), !apiKey.equals(trimmed));
+        log.info("DashScope configuration: baseUrl={}, chatModel={}, apiKeyConfigured={}, whitespace={}",
+                baseUrl, chatModel, !trimmed.isEmpty(), !apiKey.equals(trimmed));
     }
 }

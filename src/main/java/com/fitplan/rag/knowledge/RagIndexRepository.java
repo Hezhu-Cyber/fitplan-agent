@@ -82,6 +82,19 @@ public class RagIndexRepository {
         return changed == 1;
     }
 
+    public boolean renewLock(String lockName, String ownerId, int leaseSeconds) {
+        int changed = jdbcTemplate.update(
+                """
+                UPDATE rag_index_lock
+                SET locked_until = now() + (? * interval '1 second')
+                WHERE lock_name = ? AND owner_id = ?
+                """,
+                leaseSeconds,
+                lockName,
+                ownerId);
+        return changed == 1;
+    }
+
     public void releaseLock(String lockName, String ownerId) {
         jdbcTemplate.update(
                 "DELETE FROM rag_index_lock WHERE lock_name = ? AND owner_id = ?",
@@ -123,6 +136,16 @@ public class RagIndexRepository {
     public boolean hasSuccessfulIndex() {
         Integer count = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM rag_source_manifest",
+                Integer.class);
+        return count != null && count > 0;
+    }
+
+    public boolean hasSearchableIndex() {
+        Integer count = jdbcTemplate.queryForObject(
+                """
+                SELECT count(*) FROM vector_store
+                WHERE metadata->>'domain' = 'fitness'
+                """,
                 Integer.class);
         return count != null && count > 0;
     }

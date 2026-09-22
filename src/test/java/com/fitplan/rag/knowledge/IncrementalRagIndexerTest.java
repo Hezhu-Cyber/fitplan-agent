@@ -127,7 +127,7 @@ class IncrementalRagIndexerTest {
     }
 
     @Test
-    void deletesOldSourceChunksBeforeRebuildingAndPreservesManifestWhenEmbeddingFails() {
+    void keepsOldSourceChunksSearchableWhenEmbeddingFails() {
         VectorStore vectorStore = mock(VectorStore.class);
         FitnessDocumentLoader loader = mock(FitnessDocumentLoader.class);
         RagIndexRepository repository = mock(RagIndexRepository.class);
@@ -144,9 +144,8 @@ class IncrementalRagIndexerTest {
         assertThatThrownBy(indexer::indexNow)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("embedding unavailable");
-        InOrder writeOrder = inOrder(vectorStore);
-        writeOrder.verify(vectorStore).delete(List.of("old-vector"));
-        writeOrder.verify(vectorStore).add(anyList());
+        verify(vectorStore).add(anyList());
+        verify(vectorStore, never()).delete(anyList());
         verify(repository, never()).saveManifest(any());
         verify(repository).failJob(eq(jobId), contains("embedding unavailable"));
         verify(repository).releaseLock(anyString(), anyString());

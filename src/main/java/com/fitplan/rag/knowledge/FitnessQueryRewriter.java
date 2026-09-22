@@ -8,6 +8,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.rag.Query;
 import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /** Rewrites conversational fitness questions into standalone retrieval queries. */
@@ -22,6 +23,7 @@ public class FitnessQueryRewriter {
     private final FitnessRagProperties properties;
     private final MeterRegistry meterRegistry;
 
+    @Autowired
     public FitnessQueryRewriter(
             ChatClient.Builder chatClientBuilder,
             FitnessRagProperties properties,

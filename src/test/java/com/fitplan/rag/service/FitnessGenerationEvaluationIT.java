@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FitnessGenerationEvaluationIT {
 
     private static final int EXPECTED_CASE_COUNT = 30;
+    private static final UUID OWNER_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
 
     @Autowired
     private FitnessPlanningService fitnessPlanningService;
@@ -39,6 +41,7 @@ class FitnessGenerationEvaluationIT {
 
         for (EvaluationCase evaluationCase : cases) {
             String answer = fitnessPlanningService.streamPlan(
+                            OWNER_ID,
                             evaluationCase.prompt(),
                             "generation-eval-" + evaluationCase.id())
                     .collectList()

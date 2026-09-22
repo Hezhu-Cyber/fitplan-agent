@@ -1,0 +1,10 @@
+.git
+.idea
+.runtime
+target
+frontend/node_modules
+frontend/dist
+.env
+*.log
+Data/memory
+Data/memory-artifacts
